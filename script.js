@@ -20,17 +20,13 @@ function setKeyboardRow(keysArray, row) {
 
     if (keyBox.textContent == "Bck") {
       keyBox.setAttribute("id", "backspace-key");
-    }
-    if (keyBox.textContent == "Caps") {
+    } else if (keyBox.textContent == "Caps") {
       keyBox.setAttribute("id", "caps-key");
-    }
-    if (keyBox.textContent == "Shift") {
+    } else if (keyBox.textContent == "Shift") {
       keyBox.setAttribute("id", "shift-key");
-    }
-    if (keyBox.textContent == "Space") {
+    } else if (keyBox.textContent == "Space") {
       keyBox.setAttribute("id", "space-key");
-    }
-    if (keyBox.textContent == "Enter") {
+    } else if (keyBox.textContent == "Enter") {
       keyBox.setAttribute("id", "enter-key");
     }
     row.appendChild(keyBox);
@@ -98,6 +94,7 @@ function appendRowsToKeyboard() {
       ";",
       `'`,
       "\\",
+      "Enter",
     ],
     thirdRowKeysShift: [
       "A",
@@ -150,7 +147,7 @@ let IS_CAPS_ACTIVATED = false;
 
 document.body.appendChild(keyboardContainer);
 
-document.querySelector("#caps-key").addEventListener("click", () => {
+function capsLock() {
   IS_CAPS_ACTIVATED = !IS_CAPS_ACTIVATED;
   const keys = document.querySelectorAll(".key-box");
 
@@ -160,4 +157,6 @@ document.querySelector("#caps-key").addEventListener("click", () => {
         ? letter.textContent.toUpperCase()
         : letter.textContent.toLowerCase();
   });
-});
+}
+
+document.querySelector("#caps-key").addEventListener("click", capsLock);
