@@ -2,6 +2,8 @@ const keyboardContainer = document.createElement("div");
 keyboardContainer.setAttribute("id", "keyboard-container");
 keyboardContainer.style.width = window.getComputedStyle(document.body).width;
 
+let selectedInput = null;
+
 const keyboardKeys = {
   firstRowKeys: [
     "`",
@@ -188,7 +190,7 @@ function capsLock() {
   });
 }
 
-function shiftLock() {
+function shiftKeys() {
   IS_SHIFT_ACTIVATED = !IS_SHIFT_ACTIVATED;
 
   const normalKeysContent = [
@@ -223,7 +225,7 @@ document.addEventListener("keydown", (event) => {
     if (keyPressed == key.value) {
       key.style.backgroundColor = "red";
       if (keyPressed == "Shift") {
-        shiftLock();
+        shiftKeys();
       }
       if (keyPressed == "CapsLock") {
         capsLock();
@@ -239,8 +241,38 @@ document.addEventListener("keyup", (event) => {
     if (keyReleased == key.value) {
       key.style.backgroundColor = "";
       if (keyReleased == "Shift") {
-        shiftLock();
+        shiftKeys();
       }
+    }
+  });
+});
+
+document.querySelector("#shift-key").addEventListener("click", shiftKeys);
+document.querySelector("#caps-key").addEventListener("click", capsLock);
+
+const inputsForKeyboard = [
+  ...document.querySelectorAll("input[type=text]"),
+  ...document.querySelectorAll("input[type=number]"),
+  ...document.querySelectorAll("input[type=password]"),
+  ...document.querySelectorAll("input[type=email]"),
+  ...document.querySelectorAll("input[type=time]"),
+  ...document.querySelectorAll("textarea"),
+];
+
+inputsForKeyboard.forEach((input) => {
+  input.addEventListener("focus", () => {
+    selectedInput = input;
+  });
+});
+
+keys.forEach((key) => {
+  key.addEventListener("click", () => {
+    console.log(selectedInput, key.value);
+    if (selectedInput != null) {
+      if (key.value.length == 1) selectedInput.value += key.value;
+      else if (key.value == "Backspace") {
+        selectedInput.value = selectedInput.value.slice(0, -1);
+      } else if (key.value == "Enter") selectedInput.value += "\n";
     }
   });
 });
