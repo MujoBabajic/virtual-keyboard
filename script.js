@@ -169,6 +169,8 @@ let IS_SHIFT_ACTIVATED = false;
 
 document.body.appendChild(keyboardContainer);
 
+const keys = document.querySelectorAll(".key-box");
+
 function capsLock() {
   IS_CAPS_ACTIVATED = !IS_CAPS_ACTIVATED;
   const keys = document.querySelectorAll(".key-box");
@@ -202,7 +204,6 @@ function shiftLock() {
     ...keyboardKeys.thirdRowKeysShift,
     ...keyboardKeys.fourthRowKeysShift,
   ];
-  const keys = document.querySelectorAll(".key-box");
 
   for (let i = 0; i < shiftedKeysContent.length; i++) {
     keys[i].value = IS_SHIFT_ACTIVATED
@@ -215,27 +216,31 @@ function shiftLock() {
   }
 }
 
-document.querySelector("#caps-key").addEventListener("click", capsLock);
-document.querySelector("#shift-key").addEventListener("click", shiftLock);
-
-const keys = document.querySelectorAll(".key-box");
-
 document.addEventListener("keydown", (event) => {
   const keyPressed = event.key;
   console.log(keyPressed);
   keys.forEach((key) => {
     if (keyPressed == key.value) {
       key.style.backgroundColor = "red";
-      if (keyPressed == "Shift") shiftLock();
-      if (keyPressed == "CapsLock") capsLock();
+      if (keyPressed == "Shift") {
+        shiftLock();
+      }
+      if (keyPressed == "CapsLock") {
+        capsLock();
+      }
     }
   });
 });
 
 document.addEventListener("keyup", (event) => {
-  const keyPressed = event.key;
+  const keyReleased = event.key;
 
   keys.forEach((key) => {
-    if (keyPressed == key.value) key.style.backgroundColor = "";
+    if (keyReleased == key.value) {
+      key.style.backgroundColor = "";
+      if (keyReleased == "Shift") {
+        shiftLock();
+      }
+    }
   });
 });
