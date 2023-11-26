@@ -2,7 +2,10 @@ const keyboardContainer = document.createElement("div");
 keyboardContainer.setAttribute("id", "keyboard-container");
 keyboardContainer.style.width = window.getComputedStyle(document.body).width;
 
-let selectedInput = null;
+let IS_CAPS_ACTIVATED = false;
+let IS_SHIFT_ACTIVATED = false;
+
+let SELECTED_INPUT = null;
 
 const keyboardKeys = {
   firstRowKeys: [
@@ -116,7 +119,7 @@ const keyboardKeys = {
   fifthRowKeys: ["Space"],
 };
 
-function setKeyboardRow(keysArray, row) {
+function appendKeysToRow(keysArray, row) {
   keysArray.forEach((key) => {
     const keyBox = document.createElement("button");
     keyBox.setAttribute("class", "key-box");
@@ -151,11 +154,11 @@ function appendRowsToKeyboard() {
   const fifthRow = document.createElement("div");
   fifthRow.setAttribute("class", "keyboard-row");
 
-  setKeyboardRow(keyboardKeys.firstRowKeys, firstRow);
-  setKeyboardRow(keyboardKeys.secondRowKeys, secondRow);
-  setKeyboardRow(keyboardKeys.thirdRowKeys, thirdRow);
-  setKeyboardRow(keyboardKeys.fourthRowKeys, fourthRow);
-  setKeyboardRow(keyboardKeys.fifthRowKeys, fifthRow);
+  appendKeysToRow(keyboardKeys.firstRowKeys, firstRow);
+  appendKeysToRow(keyboardKeys.secondRowKeys, secondRow);
+  appendKeysToRow(keyboardKeys.thirdRowKeys, thirdRow);
+  appendKeysToRow(keyboardKeys.fourthRowKeys, fourthRow);
+  appendKeysToRow(keyboardKeys.fifthRowKeys, fifthRow);
 
   keyboardContainer.appendChild(firstRow);
   keyboardContainer.appendChild(secondRow);
@@ -164,17 +167,9 @@ function appendRowsToKeyboard() {
   keyboardContainer.appendChild(fifthRow);
 }
 
-appendRowsToKeyboard();
-
-let IS_CAPS_ACTIVATED = false;
-let IS_SHIFT_ACTIVATED = false;
-
-document.body.appendChild(keyboardContainer);
-
-const keys = document.querySelectorAll(".key-box");
-
 function capsLock() {
   IS_CAPS_ACTIVATED = !IS_CAPS_ACTIVATED;
+
   const keys = document.querySelectorAll(".key-box");
 
   keys.forEach((letter) => {
@@ -218,6 +213,12 @@ function shiftKeys() {
   }
 }
 
+appendRowsToKeyboard();
+
+document.body.appendChild(keyboardContainer);
+
+const keys = document.querySelectorAll(".key-box");
+
 document.addEventListener("keydown", (event) => {
   const keyPressed = event.key;
   console.log(keyPressed);
@@ -250,7 +251,7 @@ document.addEventListener("keyup", (event) => {
 document.querySelector("#shift-key").addEventListener("click", shiftKeys);
 document.querySelector("#caps-key").addEventListener("click", capsLock);
 
-const inputsForKeyboard = [
+const keyboardInputsArray = [
   ...document.querySelectorAll("input[type=text]"),
   ...document.querySelectorAll("input[type=number]"),
   ...document.querySelectorAll("input[type=password]"),
@@ -259,20 +260,20 @@ const inputsForKeyboard = [
   ...document.querySelectorAll("textarea"),
 ];
 
-inputsForKeyboard.forEach((input) => {
+keyboardInputsArray.forEach((input) => {
   input.addEventListener("focus", () => {
-    selectedInput = input;
+    SELECTED_INPUT = input;
   });
 });
 
 keys.forEach((key) => {
   key.addEventListener("click", () => {
-    console.log(selectedInput, key.value);
-    if (selectedInput != null) {
-      if (key.value.length == 1) selectedInput.value += key.value;
+    console.log(SELECTED_INPUT, key.value);
+    if (SELECTED_INPUT != null) {
+      if (key.value.length == 1) SELECTED_INPUT.value += key.value;
       else if (key.value == "Backspace") {
-        selectedInput.value = selectedInput.value.slice(0, -1);
-      } else if (key.value == "Enter") selectedInput.value += "\n";
+        SELECTED_INPUT.value = SELECTED_INPUT.value.slice(0, -1);
+      } else if (key.value == "Enter") SELECTED_INPUT.value += "\n";
     }
   });
 });
