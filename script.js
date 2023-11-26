@@ -1,16 +1,6 @@
 const keyboardContainer = document.createElement("div");
 keyboardContainer.setAttribute("id", "keyboard-container");
 keyboardContainer.style.width = window.getComputedStyle(document.body).width;
-const firstRow = document.createElement("div");
-firstRow.setAttribute("class", "keyboard-row");
-const secondRow = document.createElement("div");
-secondRow.setAttribute("class", "keyboard-row");
-const thirdRow = document.createElement("div");
-thirdRow.setAttribute("class", "keyboard-row");
-const fourthRow = document.createElement("div");
-fourthRow.setAttribute("class", "keyboard-row");
-const fifthRow = document.createElement("div");
-fifthRow.setAttribute("class", "keyboard-row");
 
 const keyboardKeys = {
   firstRowKeys: [
@@ -27,7 +17,7 @@ const keyboardKeys = {
     "0",
     "-",
     "=",
-    "Bck",
+    "Backspace",
   ],
   firstRowKeysShift: [
     "~",
@@ -43,9 +33,23 @@ const keyboardKeys = {
     ")",
     "_",
     "+",
-    "Bck",
+    "Backspace",
   ],
-  secondRowKeys: ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]"],
+  secondRowKeys: [
+    "q",
+    "w",
+    "e",
+    "r",
+    "t",
+    "y",
+    "u",
+    "i",
+    "o",
+    "p",
+    "[",
+    "]",
+    "\\",
+  ],
   secondRowKeysShift: [
     "Q",
     "W",
@@ -59,9 +63,10 @@ const keyboardKeys = {
     "P",
     "{",
     "}",
+    "|",
   ],
   thirdRowKeys: [
-    "Caps",
+    "CapsLock",
     "a",
     "s",
     "d",
@@ -73,11 +78,11 @@ const keyboardKeys = {
     "l",
     ";",
     `'`,
-    "\\",
+
     "Enter",
   ],
   thirdRowKeysShift: [
-    "Caps",
+    "CapsLock",
     "A",
     "S",
     "D",
@@ -89,23 +94,10 @@ const keyboardKeys = {
     "L",
     ":",
     `"`,
-    "|",
+
     "Enter",
   ],
-  fourthRowKeys: [
-    "Shift",
-    "z",
-    "x",
-    "c",
-    "v",
-    "b",
-    "n",
-    "m",
-    ",",
-    ",",
-    ".",
-    "/",
-  ],
+  fourthRowKeys: ["Shift", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/"],
   fourthRowKeysShift: [
     "Shift",
     "Z",
@@ -126,16 +118,18 @@ function setKeyboardRow(keysArray, row) {
   keysArray.forEach((key) => {
     const keyBox = document.createElement("button");
     keyBox.setAttribute("class", "key-box");
+    keyBox.value = key;
     keyBox.textContent = key;
 
-    if (keyBox.textContent == "Bck") {
+    if (keyBox.textContent == "Backspace") {
       keyBox.setAttribute("id", "backspace-key");
-    } else if (keyBox.textContent == "Caps") {
+    } else if (keyBox.textContent == "CapsLock") {
       keyBox.setAttribute("id", "caps-key");
     } else if (keyBox.textContent == "Shift") {
       keyBox.setAttribute("id", "shift-key");
     } else if (keyBox.textContent == "Space") {
       keyBox.setAttribute("id", "space-key");
+      keyBox.value = " ";
     } else if (keyBox.textContent == "Enter") {
       keyBox.setAttribute("id", "enter-key");
     }
@@ -144,6 +138,17 @@ function setKeyboardRow(keysArray, row) {
 }
 
 function appendRowsToKeyboard() {
+  const firstRow = document.createElement("div");
+  firstRow.setAttribute("class", "keyboard-row");
+  const secondRow = document.createElement("div");
+  secondRow.setAttribute("class", "keyboard-row");
+  const thirdRow = document.createElement("div");
+  thirdRow.setAttribute("class", "keyboard-row");
+  const fourthRow = document.createElement("div");
+  fourthRow.setAttribute("class", "keyboard-row");
+  const fifthRow = document.createElement("div");
+  fifthRow.setAttribute("class", "keyboard-row");
+
   setKeyboardRow(keyboardKeys.firstRowKeys, firstRow);
   setKeyboardRow(keyboardKeys.secondRowKeys, secondRow);
   setKeyboardRow(keyboardKeys.thirdRowKeys, thirdRow);
@@ -169,10 +174,15 @@ function capsLock() {
   const keys = document.querySelectorAll(".key-box");
 
   keys.forEach((letter) => {
-    if (letter.textContent.length == 1)
+    if (letter.textContent.length == 1) {
       letter.textContent = IS_CAPS_ACTIVATED
         ? letter.textContent.toUpperCase()
         : letter.textContent.toLowerCase();
+
+      letter.value = IS_CAPS_ACTIVATED
+        ? letter.value.toUpperCase()
+        : letter.value.toLowerCase();
+    }
   });
 }
 
@@ -195,6 +205,10 @@ function shiftLock() {
   const keys = document.querySelectorAll(".key-box");
 
   for (let i = 0; i < shiftedKeysContent.length; i++) {
+    keys[i].value = IS_SHIFT_ACTIVATED
+      ? shiftedKeysContent[i]
+      : normalKeysContent[i];
+
     keys[i].textContent = IS_SHIFT_ACTIVATED
       ? shiftedKeysContent[i]
       : normalKeysContent[i];
@@ -203,3 +217,25 @@ function shiftLock() {
 
 document.querySelector("#caps-key").addEventListener("click", capsLock);
 document.querySelector("#shift-key").addEventListener("click", shiftLock);
+
+const keys = document.querySelectorAll(".key-box");
+
+document.addEventListener("keydown", (event) => {
+  const keyPressed = event.key;
+  console.log(keyPressed);
+  keys.forEach((key) => {
+    if (keyPressed == key.value) {
+      key.style.backgroundColor = "red";
+      if (keyPressed == "Shift") shiftLock();
+      if (keyPressed == "CapsLock") capsLock();
+    }
+  });
+});
+
+document.addEventListener("keyup", (event) => {
+  const keyPressed = event.key;
+
+  keys.forEach((key) => {
+    if (keyPressed == key.value) key.style.backgroundColor = "";
+  });
+});

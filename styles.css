@@ -19,13 +19,26 @@ html {
 }
 
 .key-box {
-  width: 60px;
+  width: 70px;
   height: 50px;
   cursor: pointer;
+  outline: none;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 18px;
 }
 
 #space-key {
   width: 400px;
+}
+#backspace-key {
+  width: 100px;
+}
+#caps-key {
+  width: 100px;
+}
+#enter-key {
+  width: 130px;
+}
+#shift-key {
+  width: 100px;
 }
